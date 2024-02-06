@@ -1,0 +1,27 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+jobs:
+- job: DeployToKubernetes
+  displayName: 'Deploy to Kubernetes'
+  steps:
+  - task: UseDotNet@2
+    inputs:
+      version: '2.0.x'
+      packageType: 'sdk'
+
+  - script: |
+      # Your Kubernetes deployment script or commands here
+      kubectl apply -f mypod.yaml
+    displayName: 'Deploy to Kubernetes'
+
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'e74fecbd-4d5f-4530-a73b-81a9a9e5ecbc'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: 'kubectl get pods'
+    displayName: 'List Pods'
